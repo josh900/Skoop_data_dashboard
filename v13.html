@@ -11,7 +11,156 @@
             --primary-hover: #009d96;
         }
 
-        .user-table { max-height: 500px; overflow-y: auto; }
+        body {
+            opacity: 1;
+            transition: opacity 0.2s ease-in-out;
+            padding-right: 1rem;
+        }
+
+        body.loading {
+            opacity: 0.6;
+        }
+
+        /* Layout adjustments */
+        .main-content {
+            max-width: 100%;
+            padding: 0 1rem;
+        }
+
+        .left-column,
+        .right-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .left-column .card {
+            margin-bottom: 1.5rem;
+            height: auto;
+        }
+
+        .right-column .card {
+            margin-bottom: 1.5rem;
+            height: auto;
+        }
+
+        .right-column .card.logs-card {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 500px;
+        }
+
+        .right-column .card.logs-card .card-body {
+            flex: 1;
+            overflow: auto;
+        }
+
+        .left-column {
+            flex: 0 0 40%;
+            max-width: 40%;
+            padding-right: 1rem;
+        }
+
+        .right-column {
+            flex: 0 0 60%;
+            max-width: 60%;
+            padding-left: 1rem;
+        }
+
+        @media (max-width: 1400px) {
+            .left-column,
+            .right-column {
+                max-width: 100%;
+                flex: 0 0 100%;
+                padding: 0;
+            }
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .card-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 3;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+        }
+
+        .user-table {
+            position: relative;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .user-table .table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: white;
+        }
+
+        .search-results {
+            position: relative;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .search-results .table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: white;
+        }
+
         .nav-buttons {
             position: sticky;
             top: 0;
@@ -20,38 +169,29 @@
             padding: 1rem 0;
             border-bottom: 1px solid #dee2e6;
         }
-        .loading {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.9);
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
-        .loading.active { display: block; }
-        .search-results { max-height: 300px; overflow-y: auto; }
+
         .nav-toolbar {
             background: white;
             border-bottom: 1px solid #dee2e6;
             margin-bottom: 2rem;
         }
+
         .nav-toolbar .nav-link {
             color: #6c757d;
             padding: 1rem 1.5rem;
             border-bottom: 2px solid transparent;
         }
+
         .nav-toolbar .nav-link.active {
             color: var(--primary-color);
             border-bottom-color: var(--primary-color);
         }
+
         .org-search-container {
             position: relative;
             max-width: 300px;
         }
+
         .org-search-results {
             position: absolute;
             top: 100%;
@@ -64,75 +204,540 @@
             max-height: 200px;
             overflow-y: auto;
         }
+
         .org-search-results li {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .org-search-results li:last-child {
+            border-bottom: none;
+        }
+
+        .org-search-results li.active,
+        .org-search-results li:hover {
+            background-color: #f8f9fa;
+        }
+
+        .org-search-results li strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .org-search-results li small {
+            color: #6c757d;
+            margin-left: 1rem;
+        }
+
+        .btn, .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .filter-toggles {
+            background: white;
             padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+
+        .form-switch .form-check-input {
+            background-color: #fff;
+            border-color: #dee2e6;
             cursor: pointer;
         }
-        .org-search-results li:hover {
-            background: #f8f9fa;
+
+        .form-switch .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
         }
-        body {
-            opacity: 1;
-            transition: opacity 0.2s ease-in-out;
+
+        .form-check-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            cursor: pointer;
         }
-        body.loading {
-            opacity: 0.6;
+
+        .log-row-skoop {
+            background-color: rgba(0, 183, 175, 0.03);
         }
-        .loading-overlay {
+
+        .log-row-stripe {
+            background-color: rgba(255, 197, 66, 0.03);
+        }
+
+        .log-details {
+            max-width: 400px;
+            line-height: 1.4;
+            max-height: 5.6em; /* 4 lines of text */
+            overflow: hidden;
+            position: relative;
+            cursor: help;
+        }
+
+        .log-details.expandable {
+            cursor: pointer;
+        }
+
+        .log-details.expandable::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 1.4em;
+            background: linear-gradient(transparent, white);
+            pointer-events: none;
+        }
+
+        .log-details.expanded {
+            max-height: none;
+            white-space: normal;
+            word-wrap: break-word;
+            background-color: rgba(0,0,0,0.02);
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .log-details.expanded::after {
             display: none;
-            position: fixed;
+        }
+
+        .table td {
+            vertical-align: middle;
+            padding: 0.75rem;
+        }
+
+        .log-row-skoop:hover, .log-row-stripe:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+
+        .log-timestamp {
+            white-space: normal;
+            font-family: monospace;
+            line-height: 1.2;
+            font-size: 0.9rem;
+        }
+
+        /* Ensure tables don't force container expansion */
+        .table-responsive {
+            height: auto;
+        }
+
+        /* Add touch device support */
+        @media (hover: none) {
+            .log-details.expandable:active {
+                max-height: none;
+                white-space: normal;
+                word-wrap: break-word;
+                background-color: rgba(0,0,0,0.02);
+                padding: 4px;
+                border-radius: 4px;
+            }
+
+            .log-details.expandable:active::after {
+                display: none;
+            }
+        }
+
+        /* Add hover support for non-touch devices */
+        @media (hover: hover) {
+            .log-details.expandable:hover {
+                max-height: none;
+                white-space: normal;
+                word-wrap: break-word;
+                background-color: rgba(0,0,0,0.02);
+                padding: 4px;
+                border-radius: 4px;
+            }
+
+            .log-details.expandable:hover::after {
+                display: none;
+            }
+        }
+
+        /* For the logs table */
+        .logs-card .table-responsive {
+            max-height: calc(100vh - 300px); /* Adjust this value as needed */
+            overflow-y: auto;
+        }
+
+        .logs-card .table thead th {
+            position: sticky;
             top: 0;
+            z-index: 2;
+        }
+
+        /* For other tables with fixed headers */
+        .search-results .table thead th,
+        .user-table .table thead th {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
+            border-top: none;
+        }
+
+        /* Ensure proper shadow/border for sticky headers */
+        .table thead th:after {
+            content: '';
+            position: absolute;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255, 255, 255, 0.8);
-            z-index: 9999;
+            border-bottom: 2px solid #dee2e6;
         }
-        .loading-overlay.active {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .btn-outline-primary {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        .btn-outline-primary:hover {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-        }
-        .card {
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .card-header {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #eee;
-        }
-        .table th {
-            background-color: #f8f9fa;
-        }
-        .user-table {
-            contain: content;
-        }
+
+        /* Update existing styles */
         .search-results {
-            contain: content;
+            max-height: 300px;
+            overflow-y: auto;
         }
-        .btn, .nav-link {
-            transition: all 0.2s ease-in-out;
+
+        .user-table {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        /* For all tables with scrollable content */
+        .search-results .table-responsive,
+        .user-table .table-responsive,
+        .logs-card .table-responsive {
+            max-height: calc(100vh - 300px); /* Adjust this value as needed */
+            overflow-y: auto;
+        }
+
+        /* Ensure tables don't force container expansion */
+        .table-responsive {
+            height: auto;
+        }
+
+        /* For all tables with fixed headers */
+        .table thead th {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
+            border-top: none;
+        }
+
+        /* Ensure proper shadow/border for all sticky headers */
+        .table thead th:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        /* Specific container heights */
+        .search-results {
+            max-height: 300px;
+        }
+
+        .user-table {
+            max-height: 500px;
+        }
+
+        /* Ensure table headers stay above other content when scrolling */
+        .table thead {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        /* Card header should always be on top */
+        .card-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 3;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        /* Search term text should stay fixed */
+        .search-term {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
+            padding: 10px 0;
+        }
+
+        /* Table container styles */
+        .search-results {
+            position: relative;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        /* Table header styles for Salesforce Search Results */
+        .search-results .table thead th {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
+        }
+
+        /* Ensure the table header doesn't scroll with content */
+        .search-results .table-responsive {
+            overflow: visible;
+        }
+
+        .search-results .table {
+            margin-bottom: 0;
+        }
+
+        /* For Organization Users */
+        .user-table {
+            position: relative;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .user-table .table thead th {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
+        }
+
+        /* For the logs table */
+        .logs-card .table-responsive {
+            max-height: calc(100vh - 300px);
+            overflow-y: auto;
+        }
+
+        .logs-card .table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        /* Ensure proper shadow/border for sticky headers */
+        .table thead th:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .log-timestamp {
+            white-space: nowrap;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .log-details {
+            max-width: 600px;
+            line-height: 1.4;
+            position: relative;
+        }
+
+        .log-details.expandable {
+            max-height: 2.8em;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .log-details.expandable::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 1.4em;
+            background: linear-gradient(transparent, white);
+        }
+
+        .log-details.expanded {
+            max-height: none;
+            background-color: rgba(0,0,0,0.02);
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .log-details.expanded::after {
+            display: none;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .badge {
+            font-weight: 500;
+            padding: 0.4em 0.6em;
+        }
+
+        .device-info {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .device-info dl {
+            margin-bottom: 0;
+        }
+
+        .device-info dt {
+            float: left;
+            clear: left;
+            width: 70px;
+            font-weight: 600;
+        }
+
+        .device-info dd {
+            margin-left: 80px;
+        }
+
+        .screen-badge {
+            font-size: 0.8rem;
+            padding: 0.3em 0.6em;
+        }
+
+        .screen-settings {
+            font-size: 0.85rem;
+        }
+
+        .screen-schedule {
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .subscription-info {
+            font-size: 0.85rem;
+            color: #666;
+            border-top: 1px solid #eee;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+        }
+
+        .subscription-info dl {
+            margin-bottom: 0;
+        }
+
+        .subscription-info dt {
+            float: left;
+            clear: left;
+            width: 60px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .subscription-info dd {
+            margin-left: 70px;
+            margin-bottom: 0.2rem;
+        }
+
+        .device-info dd {
+            margin-bottom: 0.2rem;
+            word-break: break-word;
+        }
+
+        .screen-settings div {
+            margin-bottom: 0.2rem;
+        }
+
+        .screen-schedule div {
+            margin-bottom: 0.2rem;
+        }
+
+        .subscription-details {
+            font-size: 0.9rem;
+        }
+
+        .subscription-details dl {
+            margin-bottom: 0;
+        }
+
+        .subscription-details dt {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 0.2rem;
+        }
+
+        .subscription-details dd {
+            margin-bottom: 0.5rem;
+            margin-left: 0;
+        }
+
+        .subscription-period {
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .subscription-billing {
+            font-size: 0.9rem;
+        }
+
+        .subscription-billing .amount {
+            font-weight: 600;
+            color: #28a745;
+        }
+
+        .subscription-billing .unit {
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .floor-value {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.3rem;
+            padding-top: 0.3rem;
+            border-top: 1px solid #eee;
+        }
+
+        /* Update table column widths and scrolling - only for specific tables */
+        .logs-card .table-responsive,
+        .card:has(#screensTableBody) .table-responsive,
+        .card:has(#subscriptionsTableBody) .table-responsive {
+            min-width: 100%;
+            overflow-x: auto;
+        }
+
+        .logs-card .table th,
+        .card:has(#screensTableBody) .table th,
+        .card:has(#subscriptionsTableBody) .table th {
+            min-width: 250px;
+            background-color: #f8f9fa;
+        }
+
+        /* Special handling for specific columns that might need different widths */
+        .logs-card .table th:first-child,
+        .card:has(#screensTableBody) .table th:first-child,
+        .card:has(#subscriptionsTableBody) .table th:first-child {  /* Usually ID columns */
+            min-width: 100px;
+        }
+
+        .logs-card .table th:last-child,
+        .card:has(#screensTableBody) .table th:last-child,
+        .card:has(#subscriptionsTableBody) .table th:last-child {   /* Usually action/status columns */
+            min-width: 150px;
+        }
+
+        /* Ensure the container allows horizontal scrolling */
+        .logs-card .card-body,
+        .card:has(#screensTableBody) .card-body,
+        .card:has(#subscriptionsTableBody) .card-body {
+            padding: 1rem;
+            overflow-x: auto;
+        }
+
+        /* Prevent table from being squeezed */
+        .logs-card .table,
+        .card:has(#screensTableBody) .table,
+        .card:has(#subscriptionsTableBody) .table {
+            width: auto;
+            min-width: 100%;
         }
     </style>
 </head>
@@ -141,7 +746,7 @@
         <div class="loading-spinner"></div>
     </div>
 
-    <div class="container-fluid">
+    <div class="container-fluid main-content">
         <ul class="nav nav-toolbar">
             <li class="nav-item">
                 <a class="nav-link {{ $node['Webhook1'].path === '982hf89h23893fgtr4' ? 'active' : '' }}" 
@@ -156,14 +761,26 @@
                 </a>
             </li>
         </ul>
-    </div>
 
-    <div class="container py-4">
         <div class="nav-buttons d-flex justify-content-between align-items-center mb-4">
             <h1 class="mb-0">Organization Details</h1>
             <div class="org-search-container me-4">
                 <input type="text" class="form-control" id="orgSearchInput" placeholder="Search organizations...">
                 <ul class="list-unstyled org-search-results d-none" id="orgSearchResults"></ul>
+            </div>
+            <div class="filter-toggles d-flex align-items-center">
+                <div class="form-check form-switch me-3">
+                    <input class="form-check-input" type="checkbox" id="noMetaDataToggle">
+                    <label class="form-check-label" for="noMetaDataToggle">Skip w/ Meta Data</label>
+                </div>
+                <div class="form-check form-switch me-3">
+                    <input class="form-check-input" type="checkbox" id="noDeletedToggle">
+                    <label class="form-check-label" for="noDeletedToggle">Skip Deleted</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="autoLoadLogsToggle">
+                    <label class="form-check-label" for="autoLoadLogsToggle">Load Logs</label>
+                </div>
             </div>
             <div>
                 <a href="?orgid={{ Number($node['Webhook1'].json['query']['orgid']) - 1 }}" class="btn btn-outline-primary me-2" id="prevBtn">&larr; Previous</a>
@@ -171,150 +788,270 @@
             </div>
         </div>
 
-        <div class="card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">Skoop Information</h4>
-                <div>
-                    <button id="deleteOrgBtn" class="btn btn-sm btn-outline-danger d-none">Delete</button>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <dl>
-                            <dt>Organization ID</dt>
-                            <dd id="orgId">{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["id"] }}</dd>
-                            <dt>Name</dt>
-                            <dd>{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["name"] }}</dd>
-                            <dt>Owner Email</dt>
-                            <dd>{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["main_app_user"]["email"] }}</dd>
-                            <dt>Owner Email</dt>
-                            <dd>{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["main_app_user"]["email"] }}</dd>
-                            <dt>Deleted at:</dt>
-                            <dd>{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["delete_at"] }}</dd>
-                        </dl>
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-lg-5 left-column">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Information</h4>
+                        <div>
+                            <button id="deleteOrgBtn" class="btn btn-sm btn-outline-danger d-none">Delete</button>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <dl>
-                            <dt>Okta User ID</dt>
-                            <dd>{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["main_app_user"]["main_app_auth"]["okta_user_id"] }}</dd>
-                            <dt>Stripe Customer ID</dt>
-                            <dd>
-                                <a href="https://dashboard.stripe.com/customers/{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["main_app_user"]["main_app_auth"]["stripe_customer_id"] }}" target="_blank">
-                                    {{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["main_app_user"]["main_app_auth"]["stripe_customer_id"] }}
-                                </a>
-                            </dd>
-                            <dt>Stripe Express Account</dt>
-                            <dd>{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["main_app_user"]["main_app_auth"]["stripe_express_account_id"] }}</dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">Skoop Meta Data</h4>
-                <div>
-                    <button id="createMetaDataBtn" class="btn btn-sm btn-outline-primary d-none me-2">Create</button>
-                    <button id="deleteMetaDataBtn" class="btn btn-sm btn-outline-danger me-2 d-none">Delete</button>
-                    <button id="setToTestBtn" class="btn btn-sm btn-outline-secondary">Set to Test</button>
-                    <button id="setToVoidBtn" class="btn btn-sm btn-outline-secondary">Set to Void</button>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <dl>
-                            <dt>Meta Data ID</dt>
-                            <dd id="metaDataId">{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["id"] }}</dd>
-                            <dt>Created At</dt>
-                            <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["created_at"] }}</dd>
-                            <dt>Updated At</dt>
-                            <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["updated_at"] }}</dd>
-                            <dt>Name</dt>
-                            <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["name"] }}</dd>
-                        </dl>
-                    </div>
-                    <div class="col-md-6">
-                        <dl>
-                            <dt>Jira Asset ID</dt>
-                            <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["jira_asset_id"] }}</dd>
-                            <dt>Intercom Org ID</dt>
-                            <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["intercom_org_id"] }}</dd>
-                            <dt>Salesforce Account ID</dt>
-                            <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["salesforce_account_id"] }}</dd>
-                            <dt>Skoop DB Org ID</dt>
-                            <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["skoop_db_org_id"] }}</dd>
-                            <dt>Stripe Customer ID</dt>
-                            <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["stripe_customer_id"] }}</dd>
-                        </dl>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <dl>
+                                    <dt>Organization ID</dt>
+                                    <dd id="orgId">{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["id"] }}</dd>
+                                    <dt>Name</dt>
+                                    <dd>{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["name"] }}</dd>
+                                    <dt>Owner Email</dt>
+                                    <dd>{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["main_app_user"]["email"] }}</dd>
+                                    <dt>Owner Email</dt>
+                                    <dd>{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["main_app_user"]["email"] }}</dd>
+                                    <dt>Deleted at:</dt>
+                                    <dd>{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["delete_at"] }}</dd>
+                                </dl>
+                            </div>
+                            <div class="col-md-6">
+                                <dl>
+                                    <dt>Okta User ID</dt>
+                                    <dd>{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["main_app_user"]["main_app_auth"]["okta_user_id"] }}</dd>
+                                    <dt>Stripe Customer ID</dt>
+                                    <dd>
+                                        <a href="https://dashboard.stripe.com/customers/{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["main_app_user"]["main_app_auth"]["stripe_customer_id"] }}" target="_blank">
+                                            {{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["main_app_user"]["main_app_auth"]["stripe_customer_id"] }}
+                                        </a>
+                                    </dd>
+                                    <dt>Stripe Express Account</dt>
+                                    <dd>{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["main_app_user"]["main_app_auth"]["stripe_express_account_id"] }}</dd>
+                                    <dt>Credit Balance</dt>
+                                    <dd id="creditBalance">Loading...</dd>
+                                </dl>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4 class="mb-0">Salesforce Search Results</h4>
-            </div>
-            <div class="card-body search-results">
-                <p><strong>Search Term:</strong> {{ $item("0").$node["searchMatch3"].json["searchTerm"] }}</p>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Organization ID</th>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>Match Score</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="sfSearchResultsBody">
-                        </tbody>
-                    </table>
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Skoop Meta Data</h4>
+                        <div>
+                            <button id="createMetaDataBtn" class="btn btn-sm btn-outline-primary d-none me-2">Create</button>
+                            <button id="deleteMetaDataBtn" class="btn btn-sm btn-outline-danger me-2 d-none">Delete</button>
+                            <button id="setToTestBtn" class="btn btn-sm btn-outline-secondary">Set to Test</button>
+                            <button id="setToVoidBtn" class="btn btn-sm btn-outline-secondary">Set to Void</button>
+                            <button id="setToEMBtn" class="btn btn-sm btn-outline-secondary">Set to EM</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <dl>
+                                    <dt>Meta Data ID</dt>
+                                    <dd id="metaDataId">{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["id"] }}</dd>
+                                    <dt>Created At</dt>
+                                    <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["created_at"] }}</dd>
+                                    <dt>Updated At</dt>
+                                    <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["updated_at"] }}</dd>
+                                    <dt>Name</dt>
+                                    <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["name"] }}</dd>
+                                </dl>
+                            </div>
+                            <div class="col-md-6">
+                                <dl>
+                                    <dt>Jira Asset ID</dt>
+                                    <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["jira_asset_id"] }}</dd>
+                                    <dt>Intercom Org ID</dt>
+                                    <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["intercom_org_id"] }}</dd>
+                                    <dt>Salesforce Account ID</dt>
+                                    <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["salesforce_account_id"] }}</dd>
+                                    <dt>Skoop DB Org ID</dt>
+                                    <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["skoop_db_org_id"] }}</dd>
+                                    <dt>Stripe Customer ID</dt>
+                                    <dd>{{ $item("0").$node["pullMetaData"].json["data"]["main_app_organization_meta_data"]["0"]["stripe_customer_id"] }}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">Similar Organizations</h4>
+                    </div>
+                    <div class="card-body pt-0 search-results">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Organization ID</th>
+                                        <th>Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="searchResultsBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">Organization Users</h4>
+                    </div>
+                    <div class="card-body pt-0 user-table">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orgUsersBody">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4 class="mb-0">Similar Organizations</h4>
-            </div>
-            <div class="card-body search-results">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Organization ID</th>
-                                <th>Name</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="searchResultsBody">
-                        </tbody>
-                    </table>
+            <!-- Right Column -->
+            <div class="col-lg-7 right-column">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Screens <span id="screenCount" class="badge bg-secondary ms-2">0</span></h4>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary" id="refreshScreensBtn">
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Screen ID</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                        <th>Device Info</th>
+                                        <th>Settings</th>
+                                        <th>Schedule</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="screensTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="card">
-            <div class="card-header">
-                <h4 class="mb-0">Organization Users</h4>
-            </div>
-            <div class="card-body user-table">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>User ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                        </tr>
-                    </thead>
-                    <tbody id="orgUsersBody">
-                    </tbody>
-                </table>
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Subscriptions <span id="subscriptionCount" class="badge bg-secondary ms-2">0</span></h4>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary" id="refreshSubscriptionsBtn">
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Details</th>
+                                        <th>Period</th>
+                                        <th>Billing</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subscriptionsTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">Salesforce Search Results</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="search-term"><strong>Search Term:</strong> {{ $item("0").$node["searchMatch3"].json["searchTerm"] }}</p>
+                        <div class="search-results">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Organization ID</th>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Match Score</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sfSearchResultsBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Event Summary</h4>
+                        <div>
+                            <button id="generateSummaryBtn" class="btn btn-outline-primary me-2">
+                                Generate
+                            </button>
+                            <a id="openSummaryBtn" href="#" class="btn btn-outline-secondary d-inline-flex align-items-center justify-content-center" target="_blank">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="24" fill="currentColor" viewBox="0 0 16 18">
+                                    <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+                                    <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body" id="eventSummaryContent" style="display: none;">
+                        <!-- Summary content will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="card logs-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-0">Activity Logs <span id="totalLogCount" class="badge bg-secondary ms-2">0</span></h4>
+                        </div>
+                        <div>
+                            <button id="getLogsBtn" class="btn btn-outline-primary">
+                                Load Logs
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body pt-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="min-width: 160px;">Timestamp</th>
+                                        <th style="min-width: 120px;">Event Type</th>
+                                        <th style="min-width: 90px;">Source</th>
+                                        <th>Details</th>
+                                        <th style="min-width: 100px;" class="text-end">Amount</th>
+                                        <th style="min-width: 90px;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="combinedLogsTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -471,32 +1208,151 @@
                 console.error('Error fetching organizations:', error);
             }
 
-            orgSearchInput.addEventListener('input', () => {
-                const searchTerm = orgSearchInput.value.toLowerCase();
-                const filteredOrgs = allOrganizations.filter(org => 
-                    org.name.toLowerCase().includes(searchTerm)
-                );
+            // Normalize string for comparison
+            const normalizeString = (str) => {
+                return str.toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/[^a-z0-9]/g, '');
+            };
 
-                orgSearchResults.innerHTML = '';
+            // Calculate similarity score between two strings
+            const similarity = (s1, s2) => {
+                s1 = normalizeString(s1);
+                s2 = normalizeString(s2);
+
+                // Exact match
+                if (s1 === s2) return 1;
+
+                // Contains
+                if (s1.includes(s2) || s2.includes(s1)) {
+                    return 0.8;
+                }
+
+                // Calculate Levenshtein distance
+                const longer = s1.length > s2.length ? s1 : s2;
+                const shorter = s1.length > s2.length ? s2 : s1;
+                const longerLength = longer.length;
+
+                if (longerLength === 0) return 1.0;
+
+                const costs = new Array(shorter.length + 1);
+                for (let i = 0; i <= shorter.length; i++) {
+                    costs[i] = i;
+                }
+
+                let currentValue;
+                for (let i = 1; i <= longer.length; i++) {
+                    costs[0] = i;
+                    let nw = i - 1;
+                    for (let j = 1; j <= shorter.length; j++) {
+                        const cj = Math.min(
+                            Math.min(costs[j] + 1, costs[j - 1] + 1),
+                            nw + (longer.charAt(i - 1) === shorter.charAt(j - 1) ? 0 : 1)
+                        );
+                        nw = costs[j];
+                        costs[j] = cj;
+                    }
+                }
+
+                return (longerLength - costs[shorter.length]) / longerLength;
+            };
+
+            let searchTimeout;
+            
+            orgSearchInput.addEventListener('input', () => {
+                clearTimeout(searchTimeout);
                 
-                if (searchTerm && filteredOrgs.length > 0) {
-                    orgSearchResults.classList.remove('d-none');
-                    filteredOrgs.forEach(org => {
-                        const li = document.createElement('li');
-                        li.textContent = org.name;
-                        li.addEventListener('click', () => {
-                            navigateWithTransition(`?orgid=${org.id}`);
+                searchTimeout = setTimeout(() => {
+                    const searchTerm = orgSearchInput.value.trim();
+                    
+                    if (!searchTerm) {
+                        orgSearchResults.classList.add('d-none');
+                        return;
+                    }
+
+                    // Search and score results
+                    const searchResults = allOrganizations
+                        .map(org => ({
+                            ...org,
+                            score: Math.max(
+                                similarity(org.name, searchTerm),
+                                // Search by ID if the input looks like a number
+                                !isNaN(searchTerm) && org.id.toString() === searchTerm ? 1 : 0,
+                                // Check if organization name contains search term
+                                normalizeString(org.name).includes(normalizeString(searchTerm)) ? 0.9 : 0
+                            )
+                        }))
+                        .filter(org => org.score > 0.3) // Adjust threshold as needed
+                        .sort((a, b) => b.score - a.score)
+                        .slice(0, 10); // Limit to top 10 results
+
+                    orgSearchResults.innerHTML = '';
+                    
+                    if (searchResults.length > 0) {
+                        orgSearchResults.classList.remove('d-none');
+                        searchResults.forEach(org => {
+                            const li = document.createElement('li');
+                            li.className = 'd-flex justify-content-between align-items-center';
+                            
+                            // Highlight matching parts
+                            const highlightedName = org.name.replace(
+                                new RegExp(searchTerm, 'gi'),
+                                match => `<strong>${match}</strong>`
+                            );
+                            
+                            li.innerHTML = `
+                                <span>${highlightedName}</span>
+                                <small class="text-muted">ID: ${org.id}</small>
+                            `;
+                            
+                            li.addEventListener('click', () => {
+                                navigateWithTransition(`?orgid=${org.id}`);
+                            });
+                            orgSearchResults.appendChild(li);
                         });
+                    } else {
+                        orgSearchResults.classList.remove('d-none');
+                        const li = document.createElement('li');
+                        li.className = 'text-muted';
+                        li.textContent = 'No results found';
                         orgSearchResults.appendChild(li);
-                    });
-                } else {
+                    }
+                }, 300); // Debounce delay
+            });
+
+            // Close search results when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!orgSearchInput.contains(e.target) && !orgSearchResults.contains(e.target)) {
                     orgSearchResults.classList.add('d-none');
                 }
             });
 
-            document.addEventListener('click', (e) => {
-                if (!orgSearchInput.contains(e.target) && !orgSearchResults.contains(e.target)) {
-                    orgSearchResults.classList.add('d-none');
+            // Handle keyboard navigation
+            orgSearchInput.addEventListener('keydown', (e) => {
+                const items = orgSearchResults.getElementsByTagName('li');
+                const currentIndex = Array.from(items).findIndex(item => item.classList.contains('active'));
+
+                switch (e.key) {
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        if (currentIndex < items.length - 1) {
+                            if (currentIndex >= 0) items[currentIndex].classList.remove('active');
+                            items[currentIndex + 1].classList.add('active');
+                        }
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        if (currentIndex > 0) {
+                            items[currentIndex].classList.remove('active');
+                            items[currentIndex - 1].classList.add('active');
+                        }
+                        break;
+                    case 'Enter':
+                        e.preventDefault();
+                        const activeItem = orgSearchResults.querySelector('li.active');
+                        if (activeItem) activeItem.click();
+                        break;
                 }
             });
         });
@@ -544,8 +1400,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             const setToTestBtn = document.getElementById('setToTestBtn');
             const setToVoidBtn = document.getElementById('setToVoidBtn');
+            const setToEMBtn = document.getElementById('setToEMBtn');
             const orgId = document.getElementById('orgId') ? document.getElementById('orgId').innerText.trim() : '';
-            const orgName = '{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["name"] }}';
+            const orgName = {{ JSON.stringify($item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["name"]) }};
 
             setToTestBtn.addEventListener('click', async () => {
                 try {
@@ -581,6 +1438,30 @@
                         body: JSON.stringify({
                             name: 'Void',
                             salesforce_account_id: 'Void'
+                        })
+                    });
+
+                    if (response.ok) {
+                        console.log('Set to Test API call successful');
+                        location.reload();
+                    } else {
+                        console.error('Set to Test API call failed');
+                    }
+                } catch (error) {
+                    console.error('Error making Set to Test API call:', error);
+                }
+            });
+
+            setToEMBtn.addEventListener('click', async () => {
+                try {
+                    const response = await fetch(`https://n8n.skoopsignage.dev/webhook/982hf89h2343juirosldk54?orgid=${orgId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            name: orgName,
+                            salesforce_account_id: 'EM'
                         })
                     });
 
@@ -645,6 +1526,859 @@
             });
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const noMetaDataToggle = document.getElementById('noMetaDataToggle');
+            const noDeletedToggle = document.getElementById('noDeletedToggle');
+            
+            // Load saved preferences
+            noMetaDataToggle.checked = localStorage.getItem('skipNoMetaData') === 'true';
+            noDeletedToggle.checked = localStorage.getItem('skipDeleted') === 'true';
+            
+            // Save preferences on change
+            noMetaDataToggle.addEventListener('change', () => {
+                localStorage.setItem('skipNoMetaData', noMetaDataToggle.checked);
+            });
+            
+            noDeletedToggle.addEventListener('change', () => {
+                localStorage.setItem('skipDeleted', noDeletedToggle.checked);
+            });
+            
+            // Check if current page should be skipped
+            function shouldSkipCurrentPage() {
+                const metaDataId = document.getElementById('metaDataId')?.innerText.trim();
+                const deletedAt = '{{ $item("0").$node["pullOrg"].json["data"]["main_app_organizations"]["0"]["delete_at"] }}';
+                
+                if (noMetaDataToggle.checked && metaDataId) return true;
+                if (noDeletedToggle.checked && deletedAt) return true;
+                return false;
+            }
+            
+            // Modified navigation function
+            async function navigateWithFilters(direction) {
+                const urlParams = new URLSearchParams(window.location.search);
+                let currentId = Number(urlParams.get('orgid')) || 1;
+                let nextId = direction === 'next' ? currentId + 1 : currentId - 1;
+                
+                if (nextId < 1) return;
+                
+                if (shouldSkipCurrentPage()) {
+                    const newUrl = new URL(window.location.href);
+                    newUrl.searchParams.set('orgid', nextId);
+                    navigateWithTransition(newUrl.toString());
+                }
+            }
+
+
+        // Override click handlers for navigation buttons
+        document.getElementById('prevBtn')?.addEventListener('click', (e) => {
+            if (shouldSkipCurrentPage()) {
+                e.preventDefault();
+                navigateWithFilters('prev');
+            }
+        });
+        
+        document.getElementById('nextBtn')?.addEventListener('click', (e) => {
+            if (shouldSkipCurrentPage()) {
+                e.preventDefault();
+                navigateWithFilters('next');
+            }
+        });
+        
+        // Check on page load if we need to skip
+        if (shouldSkipCurrentPage()) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentId = Number(urlParams.get('orgid')) || 1;
+            const referrer = document.referrer;
+            const direction = referrer && Number(new URL(referrer).searchParams.get('orgid')) > currentId ? 'prev' : 'next';
+            navigateWithFilters(direction);
+        }
+    });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const getLogsBtn = document.getElementById('getLogsBtn');
+            const combinedLogsTableBody = document.getElementById('combinedLogsTableBody');
+            const totalLogCount = document.getElementById('totalLogCount');
+            const autoLoadLogsToggle = document.getElementById('autoLoadLogsToggle');
+            const orgId = document.getElementById('orgId')?.innerText.trim();
+            const stripeCustomerId = document.querySelector('a[href^="https://dashboard.stripe.com/customers/"]')?.textContent.trim();
+
+            let allLogs = [];
+
+            const formatTimestamp = (timestamp) => {
+                try {
+                    let date;
+                    // Handle Unix timestamps (Stripe)
+                    if (typeof timestamp === 'number') {
+                        date = new Date(timestamp * 1000);
+                    } else {
+                        // Handle ISO strings (Skoop)
+                        date = new Date(timestamp);
+                    }
+
+                    // Validate the date
+                    if (isNaN(date.getTime())) {
+                        throw new Error('Invalid date');
+                    }
+
+                    // Convert year if it's too far in the future (Unix timestamp interpretation issue)
+                    if (date.getFullYear() > 2100) {
+                        date = new Date(timestamp);
+                    }
+
+                    const dateStr = date.toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                    });
+
+                    const timeStr = date.toLocaleString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: true
+                    });
+
+                    return `${dateStr},<br>${timeStr}`;
+                } catch (error) {
+                    console.error('Error formatting timestamp:', timestamp);
+                    return 'Invalid date';
+                }
+            };
+
+            const formatCurrency = (amount, currency = 'usd') => {
+                if (!amount) return '-';
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: currency.toUpperCase()
+                }).format(amount / 100);
+            };
+
+            const getSkoopEventDetails = (log) => {
+                let details = [];
+                
+                // Core details
+                if (log.event_log) details.push(`Event: ${log.event_log}`);
+                if (log.description) details.push(log.description);
+                if (log.sql_logs) details.push(log.sql_logs);
+                
+                // User info
+                if (log.user_email) details.push(`User: ${log.user_email}`);
+                
+                // Resource IDs
+                if (log.screen_id) details.push(`Screen ID: ${log.screen_id}`);
+                if (log.device_id) details.push(`Device ID: ${log.device_id}`);
+                if (log.playlist_id) details.push(`Playlist ID: ${log.playlist_id}`);
+                
+                // Organization info
+                if (log.organization_name) details.push(`Org: ${log.organization_name}`);
+
+                return details.filter(Boolean).join(' | ');
+            };
+
+            const getStripeEventDetails = (event) => {
+                const obj = event.data.object;
+                let details = [];
+                
+                // Invoice details
+                if (obj.billing_reason) details.push(`Billing: ${obj.billing_reason}`);
+                if (obj.customer_name) details.push(`Customer: ${obj.customer_name}`);
+                if (obj.customer_email) details.push(`Email: ${obj.customer_email}`);
+                if (obj.description) details.push(obj.description);
+                
+                // Status and amounts
+                if (obj.status) details.push(`Status: ${obj.status}`);
+                if (obj.amount_due) details.push(`Due: $${obj.amount_due}`);
+                if (obj.amount_paid) details.push(`Paid: $${obj.amount_paid}`);
+                
+                // Period info
+                if (obj.period_start && obj.period_end) {
+                    const start = new Date(obj.period_start).toLocaleDateString();
+                    const end = new Date(obj.period_end).toLocaleDateString();
+                    details.push(`Period: ${start} - ${end}`);
+                }
+
+                // Status transitions
+                if (obj.status_transitions) {
+                    if (obj.status_transitions.finalized_at) {
+                        details.push(`Finalized: ${new Date(obj.status_transitions.finalized_at).toLocaleString()}`);
+                    }
+                    if (obj.status_transitions.paid_at) {
+                        details.push(`Paid: ${new Date(obj.status_transitions.paid_at).toLocaleString()}`);
+                    }
+                }
+                
+                // Invoice URL
+                if (obj.hosted_invoice_url) {
+                    details.push(`<a href="${obj.hosted_invoice_url}" target="_blank">View Invoice</a>`);
+                }
+
+                return details.filter(Boolean).join(' | ');
+            };
+
+            const createLogRow = (log) => {
+                const row = document.createElement('tr');
+                row.className = log.source === 'Skoop' ? 'log-row-skoop' : 'log-row-stripe';
+                
+                // Format the timestamp
+                const timestamp = new Date(log.timestamp);
+                const formattedDate = timestamp.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+                const formattedTime = timestamp.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true
+                });
+
+                const detailsText = log.details;
+                const isExpandable = detailsText.length > 200;
+                
+                row.innerHTML = `
+                    <td class="log-timestamp">
+                        ${formattedDate}<br>${formattedTime}
+                    </td>
+                    <td>
+                        <div class="text-truncate" style="max-width: 150px;" title="${log.type}">
+                            ${log.type}
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge ${log.source === 'Skoop' ? 'bg-primary' : 'bg-warning text-dark'}">
+                            ${log.source}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="log-details ${isExpandable ? 'expandable' : ''}" 
+                             title="${isExpandable ? 'Click to expand' : ''}">
+                            ${detailsText}
+                        </div>
+                    </td>
+                    <td class="text-end">
+                        ${log.amount ? `$${parseFloat(log.amount).toFixed(2)}` : '-'}
+                    </td>
+                    <td>
+                        ${log.status ? 
+                            `<span class="badge bg-${log.status === 'succeeded' || log.status === 'paid' ? 'success' : 'secondary'}">
+                                ${log.status}
+                            </span>` : 
+                            '-'
+                        }
+                    </td>
+                `;
+
+                if (isExpandable) {
+                    const detailsDiv = row.querySelector('.log-details');
+                    detailsDiv.addEventListener('click', () => {
+                        detailsDiv.classList.toggle('expanded');
+                    });
+                }
+
+                return row;
+            };
+
+            const updateLogsDisplay = () => {
+                combinedLogsTableBody.innerHTML = '';
+                allLogs.forEach(log => {
+                    combinedLogsTableBody.appendChild(createLogRow(log));
+                });
+                totalLogCount.textContent = allLogs.length;
+            };
+
+            const loadAllLogs = async () => {
+                getLogsBtn.disabled = true;
+                getLogsBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+                
+                try {
+                    // Load both types of logs in parallel
+                    const [skoopLogs, stripeLogs] = await Promise.all([
+                        fetch(`https://n8n.skoopsignage.dev/webhook/982hf89h23433dhsirlek?orgid=${orgId}`).then(r => r.json()),
+                        stripeCustomerId ? fetch(`https://n8n.skoopsignage.dev/webhook/88dufuiiej8h8h83h8ed8eirtkug?customerId=${stripeCustomerId}`).then(r => r.json()) : Promise.resolve([])
+                    ]);
+
+                    // Transform Skoop logs
+                    const formattedSkoopLogs = skoopLogs.map(log => ({
+                        timestamp: new Date(log.created_at).getTime(), // Convert to milliseconds
+                        type: log.event_log,
+                        source: 'Skoop',
+                        details: getSkoopEventDetails(log),
+                        amount: null,
+                        status: null,
+                        rawData: log
+                    }));
+
+                    // Transform Stripe events
+                    const formattedStripeLogs = stripeLogs.map(event => ({
+                        timestamp: new Date(event.created).getTime(), // Already ISO string after cleaning
+                        type: event.type,
+                        source: 'Stripe',
+                        details: getStripeEventDetails(event),
+                        amount: event.data.object.amount,
+                        status: event.data.object.status,
+                        rawData: event
+                    }));
+
+                    // Combine and sort all logs
+                    allLogs = [...formattedSkoopLogs, ...formattedStripeLogs]
+                        .sort((a, b) => b.timestamp - a.timestamp);
+
+                    // Update the table
+                    updateLogsDisplay();
+
+                } catch (error) {
+                    console.error('Error loading logs:', error);
+                } finally {
+                    getLogsBtn.disabled = false;
+                    getLogsBtn.innerHTML = 'Load Logs';
+                }
+            };
+
+            // Event Listeners
+            getLogsBtn.addEventListener('click', loadAllLogs);
+
+            // Auto-load handling
+            if (autoLoadLogsToggle?.checked) {
+                loadAllLogs();
+            }
+
+            // Update existing auto-load toggle handler
+            autoLoadLogsToggle?.addEventListener('change', () => {
+                localStorage.setItem('autoLoadLogs', autoLoadLogsToggle.checked);
+                if (autoLoadLogsToggle.checked) {
+                    loadAllLogs();
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const autoLoadLogsToggle = document.getElementById('autoLoadLogsToggle');
+            const getLogsBtn = document.getElementById('getLogsBtn');
+            const getStripeEventsBtn = document.getElementById('getStripeEventsBtn');
+
+            // Load saved preference
+            autoLoadLogsToggle.checked = localStorage.getItem('autoLoadLogs') === 'true';
+
+            // Save preference when changed
+            autoLoadLogsToggle.addEventListener('change', () => {
+                localStorage.setItem('autoLoadLogs', autoLoadLogsToggle.checked);
+            });
+
+            // Function to trigger log loading
+            const loadAllLogs = () => {
+                if (autoLoadLogsToggle.checked) {
+                    // Trigger both log loading buttons
+                    getLogsBtn.click();
+                    getStripeEventsBtn.click();
+                }
+            };
+
+            // Add to the existing page navigation logic
+            const existingNavigateWithTransition = window.navigateWithTransition;
+            window.navigateWithTransition = (url) => {
+                document.getElementById('loadingOverlay').classList.add('active');
+                document.body.classList.add('loading');
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        window.location.href = url;
+                    }, 100);
+                });
+            };
+
+            // Modify the existing DOMContentLoaded handler to include log loading
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('orgid')) {
+                loadAllLogs();
+            }
+
+            // Handle browser navigation
+            window.addEventListener('popstate', () => {
+                loadAllLogs();
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const generateSummaryBtn = document.getElementById('generateSummaryBtn');
+            const eventSummaryContent = document.getElementById('eventSummaryContent');
+            const orgId = document.getElementById('orgId')?.innerText.trim();
+            const stripeCustomerId = document.querySelector('a[href^="https://dashboard.stripe.com/customers/"]')?.textContent.trim();
+
+            generateSummaryBtn.addEventListener('click', async () => {
+                generateSummaryBtn.disabled = true;
+                generateSummaryBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generating...';
+
+                try {
+                    const response = await fetch(`https://n8n.skoopsignage.dev/webhook/88dufuiiej8h8h3eftr45tye?orgid=${orgId}&customerId=${stripeCustomerId}`);
+                    const html = await response.text();
+                    
+                    // Create an iframe with a unique name
+                    const iframe = document.createElement('iframe');
+                    iframe.style.width = '100%';
+                    iframe.style.border = 'none';
+                    iframe.style.minHeight = '500px';
+                    iframe.style.overflow = 'hidden';
+                    
+                    // Clear previous content and add iframe
+                    eventSummaryContent.innerHTML = '';
+                    eventSummaryContent.appendChild(iframe);
+                    eventSummaryContent.style.display = 'block';
+
+                    // Write the HTML content to the iframe
+                    const iframeDoc = iframe.contentWindow.document;
+                    iframeDoc.open();
+                    iframeDoc.write(html);
+                    iframeDoc.close();
+
+                    // Adjust iframe height to content
+                    const resizeIframe = () => {
+                        iframe.style.height = iframeDoc.body.scrollHeight + 'px';
+                    };
+
+                    // Resize once content is loaded
+                    iframe.onload = resizeIframe;
+                    // Also resize periodically in case of dynamic content
+                    setInterval(resizeIframe, 1000);
+
+                } catch (error) {
+                    console.error('Error generating summary:', error);
+                    eventSummaryContent.innerHTML = '<div class="alert alert-danger">Error generating summary. Please try again.</div>';
+                } finally {
+                    generateSummaryBtn.disabled = false;
+                    generateSummaryBtn.innerHTML = 'Generate';
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const openSummaryBtn = document.getElementById('openSummaryBtn');
+            const orgId = document.getElementById('orgId')?.innerText.trim();
+            const stripeCustomerId = document.querySelector('a[href^="https://dashboard.stripe.com/customers/"]')?.textContent.trim();
+
+            // Create the URL
+            const summaryUrl = `https://n8n.skoopsignage.dev/webhook/88dufuiiej8h8h3eftr45tye?orgid=${orgId}&customerId=${stripeCustomerId}&model=sonnet`;
+            
+            // Set the href attribute
+            openSummaryBtn.href = summaryUrl;
+
+            // Prevent default click if href isn't set yet
+            openSummaryBtn.addEventListener('click', (e) => {
+                if (!orgId || !stripeCustomerId) {
+                    e.preventDefault();
+                    alert('Organization ID or Customer ID not available');
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const refreshScreensBtn = document.getElementById('refreshScreensBtn');
+            const screensTableBody = document.getElementById('screensTableBody');
+            const screenCount = document.getElementById('screenCount');
+            
+            // Helper function to format dates with timezone
+            const formatDateTime = (dateString) => {
+                if (!dateString) return 'Never';
+                const date = new Date(dateString);
+                return date.toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    timeZoneName: 'short'
+                });
+            };
+
+            // Helper function to format dates
+            const formatDate = (dateString) => {
+                if (!dateString || dateString === '0001-01-01T00:00:00+00:00') return 'Not set';
+                return new Date(dateString).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            };
+
+            // Helper function to get subscription info
+            const getSubscriptionInfo = (screen, subscriptions) => {
+                const subscription = subscriptions.find(sub => 
+                    sub.subscription_name?.toLowerCase().includes(screen.id.toString())
+                );
+                
+                if (!subscription) return '<small class="text-muted">No subscription found</small>';
+                
+                return `
+                    <div class="subscription-info">
+                        <dl>
+                            <dt>Status</dt>
+                            <dd>${subscription.status || 'Active'}</dd>
+                            <dt>Product</dt>
+                            <dd>${subscription.product_name}</dd>
+                        </dl>
+                    </div>
+                `;
+            };
+            
+            // Define loadScreensData function
+            const loadScreensData = async () => {
+                const orgId = document.getElementById('orgId')?.innerText.trim();
+                if (!orgId) return;
+                
+                refreshScreensBtn.disabled = true;
+                refreshScreensBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+                
+                try {
+                    const response = await fetch(`https://n8n.skoopsignage.dev/webhook/982hf89h2343juir4rifkkgir4?orgid=${orgId}`);
+                    const data = await response.json();
+                    
+                    const screens = data[0].data.main_app_screens;
+                    const subscriptions = data[0].data.payment_subscriptions;
+                    screenCount.textContent = screens.length;
+                    
+                    screensTableBody.innerHTML = '';
+                    
+                    screens.forEach(screen => {
+                        const row = document.createElement('tr');
+                        
+                        // Status badge class based on pairing status
+                        const statusBadgeClass = screen.is_paired ? 
+                            'bg-warning text-dark' :
+                            'bg-secondary';      
+                        
+                        // Device info formatting
+                        const deviceInfo = screen.main_app_device ? `
+                            <div class="device-info">
+                                <dl>
+                                    <dt>Model:</dt>
+                                    <dd>${screen.main_app_device.model || 'N/A'}</dd>
+                                    <dt>Version:</dt>
+                                    <dd>${screen.main_app_device.app_version || 'N/A'}</dd>
+                                    <dt>IP:</dt>
+                                    <dd>${screen.main_app_device.ip || 'N/A'}</dd>
+                                    <dt>Serial:</dt>
+                                    <dd>${screen.main_app_device.serial_no || 'N/A'}</dd>
+                                    <dt>OS:</dt>
+                                    <dd>${screen.main_app_device.os} ${screen.main_app_device.os_version}</dd>
+                                    <dt>Storage:</dt>
+                                    <dd>${(screen.main_app_device.available_storage / 1024 / 1024 / 1024).toFixed(2)}GB free</dd>
+                                    <dt>RAM:</dt>
+                                    <dd>${(screen.main_app_device.ram / 1024 / 1024 / 1024).toFixed(2)}GB</dd>
+                                </dl>
+                            </div>
+                        ` : 'No device paired';
+
+                        row.innerHTML = `
+                            <td>
+                                <div class="mb-2"><strong>${screen.name || ``}</strong></div>
+                                <div>${screen.id}</div>
+                            </td>
+                            <td>
+                                <span class="badge screen-badge ${statusBadgeClass}" 
+                                      id="screen-status-${screen.id}" 
+                                      data-screen-id="${screen.id}">
+                                    ${screen.is_paired ? 'Offline' : 'Unpaired'}
+                                </span>
+                                <div class="mt-2" id="last-online-${screen.id}">
+                                    <small class="text-muted">Last Online: Loading...</small>
+                                </div>
+                                <div class="mt-2"><small class="text-muted">Billing Active: ${screen.is_active_billing ? 'Active' : 'Inactive'}</small></div>
+                                <div class="mt-0"><small class="text-muted">Active For Billing: ${screen.is_active_for_billing ? 'Active' : 'Inactive'}</small></div>
+                                <div class="mt-0"><small class="text-muted">Logs Level: ${screen.logs_level}</small></div>
+                            </td>
+                            <td>
+                                <div>Playlist: ${screen.main_app_playlist?.name || 'No playlist'}</div>
+                                <small class="text-muted">
+                                    ${screen.main_app_playlist?.number_of_content || 0} items
+                                </small>
+                                <div class="mt-2">
+                                    ${getSubscriptionInfo(screen, subscriptions)}
+                                </div>
+                            </td>
+                            <td>${deviceInfo}</td>
+                            <td>
+                                <div class="screen-settings">
+                                    <div>Resolution: <b>${screen.resolution_width_in_px}</b> x <b>${screen.resolution_height_in_px}</b></div>
+                                    <div>Orientation: <b>${screen.screen_orientation}</b></div>
+                                    <div>Mode: <b>${screen.screen_mode}</b></div>
+                                    <div>Loop Duration: <b>${screen.loop_duration_in_seconds}s</b></div>
+                                    <div>Refresh Duration: <b>${screen.refresh_duration}s</b></div>
+                                    <div>Refresh Cache Duration: <b>${screen.refresh_cache_duration}m</b></div>
+                                    <div>Scale Factor: <b>${screen.scale_factor}</b></div>
+                                    ${screen.size_width_in_inches ? `<div>Size: ${screen.size_width_in_inches}"x${screen.size_height_in_inches}"</div>` : ''}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="screen-schedule">
+                                    <div>On: ${screen.screen_on_time || 'Not set'}</div>
+                                    <div>Off: ${screen.screen_off_time || 'Not set'}</div>
+                                    <div>Timezone: ${screen.timezone_identifier || 'Not set'}</div>
+                                    <div>Created: ${formatDate(screen.created_at)}</div>
+                                    <div>Activated: ${formatDate(screen.activation_date)}</div>
+                                </div>
+                            </td>
+                        `;
+                        
+                        screensTableBody.appendChild(row);
+                    });
+                    
+                } catch (error) {
+                    console.error('Error loading screens data:', error);
+                } finally {
+                    refreshScreensBtn.disabled = false;
+                    refreshScreensBtn.textContent = 'Refresh';
+                }
+            };
+
+            // Define checkScreenStatuses function
+            const checkScreenStatuses = async () => {
+                // Get all screen status badges
+                const statusBadges = document.querySelectorAll('[id^="screen-status-"]');
+                
+                // Check each screen's pulse
+                for (const badge of statusBadges) {
+                    const screenId = badge.dataset.screenId;
+                    const lastOnlineElement = document.getElementById(`last-online-${screenId}`);
+                    
+                    try {
+                        const response = await fetch(`https://n8n.skoopsignage.dev/webhook/ew8dhf8h84ii8heg8he8839909sja9?screenId=${screenId}`);
+                        const data = await response.json();
+                        
+                        const pulse = data[0]?.data?.main_app_pulses[0];
+                        if (pulse) {
+                            const pulseTime = new Date(pulse.time);
+                            const now = new Date();
+                            const diffInMinutes = (now - pulseTime) / 1000 / 60;
+                            
+                            // Update last online time
+                            if (lastOnlineElement) {
+                                lastOnlineElement.innerHTML = `
+                                    <small class="text-muted">Last Online: ${formatDateTime(pulse.time)}</small>
+                                `;
+                            }
+                            
+                            // Update badge if pulse is less than 1 minute old
+                            if (diffInMinutes < 1) {
+                                badge.className = 'badge screen-badge bg-success';
+                                badge.textContent = 'Online';
+                            } else {
+                                // Update offline status
+                                const isPaired = badge.textContent !== 'Unpaired';
+                                badge.className = `badge screen-badge ${isPaired ? 'bg-warning text-dark' : 'bg-secondary'}`;
+                                badge.textContent = isPaired ? 'Offline' : 'Unpaired';
+                            }
+                        }
+                    } catch (error) {
+                        console.error(`Error checking pulse for screen ${screenId}:`, error);
+                    }
+                }
+            };
+
+            // Set up initial load and periodic checks
+            const startStatusChecks = () => {
+                checkScreenStatuses();
+                setInterval(checkScreenStatuses, 60000); // Check every minute
+            };
+
+            // Load screens data and start status checks
+            loadScreensData().then(() => {
+                startStatusChecks();
+            });
+
+            // Refresh button handler
+            refreshScreensBtn.addEventListener('click', () => {
+                loadScreensData().then(() => {
+                    checkScreenStatuses();
+                });
+            });
+            
+            // Add screens loading to auto-load functionality
+            const existingAutoLoadLogsToggle = document.getElementById('autoLoadLogsToggle');
+            if (existingAutoLoadLogsToggle) {
+                existingAutoLoadLogsToggle.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        loadScreensData().then(() => {
+                            checkScreenStatuses();
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const refreshSubscriptionsBtn = document.getElementById('refreshSubscriptionsBtn');
+            const subscriptionsTableBody = document.getElementById('subscriptionsTableBody');
+            const subscriptionCount = document.getElementById('subscriptionCount');
+            
+            const formatDate = (dateString) => {
+                if (!dateString || dateString === '0001-01-01T00:00:00+00:00') return 'Not set';
+                return new Date(dateString).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            };
+
+            const formatCurrency = (amount) => {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2
+                }).format(amount / 100);
+            };
+
+            const getStatusBadgeClass = (status) => {
+                switch (status?.toLowerCase()) {
+                    case 'active':
+                        return 'bg-success';
+                    case 'trialing':
+                        return 'bg-info';
+                    case 'past_due':
+                        return 'bg-warning text-dark';
+                    case 'canceled':
+                        return 'bg-danger';
+                    default:
+                        return 'bg-secondary';
+                }
+            };
+
+            const loadSubscriptionsData = async () => {
+                const orgId = document.getElementById('orgId')?.innerText.trim();
+                if (!orgId) return;
+                
+                refreshSubscriptionsBtn.disabled = true;
+                refreshSubscriptionsBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+                
+                try {
+                    const response = await fetch(`https://n8n.skoopsignage.dev/webhook/982hf89h2343juir4rifkkgir4?orgid=${orgId}`);
+                    const data = await response.json();
+                    
+                    const subscriptions = data[0].data.payment_subscriptions;
+                    subscriptionCount.textContent = subscriptions.length;
+                    
+                    subscriptionsTableBody.innerHTML = '';
+                    
+                    subscriptions.forEach(sub => {
+                        const row = document.createElement('tr');
+                        
+                        const details = `
+                            <div class="subscription-details">
+                                <dl>
+                                    <dt>Product</dt>
+                                    <dd>${sub.product_name}</dd>
+                                    <dt>Payment Method</dt>
+                                    <dd>${sub.payment_method_id || 'Not set'}</dd>
+                                </dl>
+                                <div class="floor-value">
+                                    Floor Value: ${sub.floor_value}
+                                </div>
+                            </div>
+                        `;
+
+                        const period = `
+                            <div class="subscription-period">
+                                <div>Start: ${formatDate(sub.current_period_start_date)}</div>
+                                <div>End: ${formatDate(sub.current_period_end_date)}</div>
+                                ${sub.trial_end_date && sub.trial_end_date !== '1970-01-01T00:00:00+00:00' ? 
+                                    `<div>Trial Ends: ${formatDate(sub.trial_end_date)}</div>` : ''}
+                                ${sub.expire_date && sub.expire_date !== '0001-01-01T00:00:00+00:00' ? 
+                                    `<div>Expires: ${formatDate(sub.expire_date)}</div>` : ''}
+                            </div>
+                        `;
+
+                        const billing = `
+                            <div class="subscription-billing">
+                                <div>
+                                    <span class="amount">${formatCurrency(sub.amount)}</span>
+                                    <span class="unit">/month</span>
+                                </div>
+                                ${sub.unit_amount ? `
+                                    <div>
+                                        <span class="unit">Unit: ${formatCurrency(sub.unit_amount)}</span>
+                                    </div>
+                                ` : ''}
+                                ${sub.total_count ? `
+                                    <div>
+                                        <span class="unit">Count: ${sub.total_count}</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+
+                        row.innerHTML = `
+                            <td>${sub.id}</td>
+                            <td>${sub.subscription_name}</td>
+                            <td>${details}</td>
+                            <td>${period}</td>
+                            <td>${billing}</td>
+                            <td>
+                                <span class="badge ${getStatusBadgeClass(sub.status)}">
+                                    ${sub.status || 'Active'}
+                                </span>
+                            </td>
+                        `;
+                        
+                        subscriptionsTableBody.appendChild(row);
+                    });
+                    
+                } catch (error) {
+                    console.error('Error loading subscriptions data:', error);
+                } finally {
+                    refreshSubscriptionsBtn.disabled = false;
+                    refreshSubscriptionsBtn.textContent = 'Refresh';
+                }
+            };
+            
+            // Load subscriptions data on page load
+            loadSubscriptionsData();
+            
+            // Refresh button handler
+            refreshSubscriptionsBtn.addEventListener('click', loadSubscriptionsData);
+            
+            // Add subscriptions loading to auto-load functionality
+            const existingAutoLoadLogsToggle = document.getElementById('autoLoadLogsToggle');
+            if (existingAutoLoadLogsToggle) {
+                existingAutoLoadLogsToggle.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        loadSubscriptionsData();
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const stripeCustomerId = document.querySelector('a[href^="https://dashboard.stripe.com/customers/"]')?.textContent.trim();
+            const creditBalanceElement = document.getElementById('creditBalance');
+
+            if (stripeCustomerId && creditBalanceElement) {
+                try {
+                    const response = await fetch(`https://n8n.skoopsignage.dev/webhook/982hf89h2343juir4rifk4fkkodiirkfg?customerId=${stripeCustomerId}`);
+                    const data = await response.json();
+                    creditBalanceElement.textContent = data[0].credit_balance || '$0.00';
+                } catch (error) {
+                    console.error('Error fetching credit balance:', error);
+                    creditBalanceElement.textContent = 'Error loading balance';
+                }
+            } else {
+                creditBalanceElement.textContent = 'N/A';
+            }
+        });
+    </script>
 </body>
 </html>
-
